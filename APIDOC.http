@@ -1,0 +1,67 @@
+
+# ============fitwise_app v1 =================
+
+# api call for creating authentication
+###
+POST http://127.0.0.1:8000/v1/fitwise/register/
+Content-Type: application/json
+
+{
+    "username":"muhsina",
+    "email":"muhsina@gmail.com",
+    "password":"muhsina123"
+}
+
+# api call for listing users 
+###
+GET http://127.0.0.1:8000/v1/fitwise/me/
+Accept: application/json
+Authorization: Basic avanthika:avanthika123
+
+# api call for listing foodlog details
+###
+GET http://127.0.0.1:8000/v1/fitwise/foodlog/
+Accept: application/json
+Authorization: Basic avanthika:avanthika123
+
+# api call for creating foodlog details
+###
+POST http://127.0.0.1:8000/v1/fitwise/foodlog/
+Content-Type: application/json
+Authorization: Basic avanthika:avanthika123
+
+{
+    "title":"egg",
+    "calorie":50,
+    "meal_type":"SNACKS",
+    "serving_size":"50 gm"
+}
+
+# api call for listing one foodlog details
+###
+GET http://127.0.0.1:8000/v1/fitwise/foodlog/2/
+Accept: application/json
+Authorization: Basic avanthika:avanthika123
+
+# api call for updating one foodlog details
+###
+PUT http://127.0.0.1:8000/v1/fitwise/foodlog/2/ 
+Content-Type: application/json
+Authorization: Basic avanthika:avanthika123
+
+{
+  "id": 2,
+  "owner": "vasudev",
+  "title": "manthi",
+  "calorie": 500,
+  "meal_type": "LUNCH",
+  "serving_size": "300 gm",
+  "created_at": "2026-10-10T05:11:55.377930Z"
+}
+
+# api call for deleting one foodlog details
+###
+DELETE http://127.0.0.1:8000/v1/fitwise/foodlog/1/
+Accept: application/json
+Authorization: Basic avanthika:avanthika123
+
