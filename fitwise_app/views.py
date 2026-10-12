@@ -7,6 +7,7 @@ from rest_framework import authentication,permissions
 
 from fitwise_app.serializers import SignUpSerializer,FoodLogSerializer
 from fitwise_app.models import FoodLog
+from fitwise_app.permissions import IsOwner
 
 class RegisterView(APIView):
 
@@ -32,7 +33,8 @@ class RegisterView(APIView):
 
 class GetMeView(APIView):
 
-    authentication_classes = [authentication.BasicAuthentication]
+    # authentication_classes = [authentication.BasicAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self,request):
@@ -47,7 +49,8 @@ class GetMeView(APIView):
 
 class FoodLogListCreateView(APIView):
 
-    authentication_classes = [authentication.BasicAuthentication]
+    # authentication_classes = [authentication.BasicAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self,request):
@@ -76,12 +79,16 @@ class FoodLogListCreateView(APIView):
 
 class FoodLogRetrieveUpdateDeleteView(APIView):
 
-    authentication_classes = [authentication.BasicAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.BasicAuthentication]
+    authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsOwner]
 
     def get(self,request,pk=None):
 
         instance = get_object_or_404(FoodLog,id=pk)
+
+        self.check_object_permissions(request,instance)
 
         serializer_instance = FoodLogSerializer(instance)
 
@@ -90,6 +97,8 @@ class FoodLogRetrieveUpdateDeleteView(APIView):
     def put(self,request,pk=None):
 
         instance = get_object_or_404(FoodLog,id=pk)
+
+        self.check_object_permissions(request,instance)
 
         form_data = request.data
 
@@ -108,6 +117,8 @@ class FoodLogRetrieveUpdateDeleteView(APIView):
     def delete(self,request,pk=None):
 
         instance = get_object_or_404(FoodLog,id=pk)
+
+        self.check_object_permissions(request,instance)
 
         instance.delete()
 
