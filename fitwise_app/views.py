@@ -1,9 +1,12 @@
 from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication,permissions
+
+from datetime import datetime
 
 from fitwise_app.serializers import SignUpSerializer,FoodLogSerializer
 from fitwise_app.models import FoodLog
@@ -124,4 +127,43 @@ class FoodLogRetrieveUpdateDeleteView(APIView):
 
         return Response(data={"message":"deleted"})
 
-        
+class FoodLogSummaryView(APIView):
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self,request):
+
+        response_data = {
+            "todays_total_calorie":0
+        }
+
+        cur_date = datetime.now().date()
+        cur_month = datetime.now().month
+        cur_year = datetime.now().year
+
+        # todays total calorie
+
+        todays_foodlog = FoodLog.objects.filter(owner=request.user,created_at__date=cur_date)
+
+        if todays_foodlog:
+
+            today_total_cal = todays_foodlog.values("calorie").aggregate(total=Sum("calorie")).get("total")
+            today_cat_total_cal = todays_foodlog.values("meal_type").annotate(total=Sum("calorie"))
+
+            response_data["todays_total_calorie"] = today_total_cal
+            response_data["todays_category_total_calorie"] = today_cat_total_cal
+
+        # monthly total calorie
+
+        monthly_foodlog = FoodLog.objects.filter(owner=request.user,created_at__month=cur_month,created_at__year=cur_year)
+
+        if monthly_foodlog:
+
+            monthly_total_cal = monthly_foodlog.values("calorie").aggregate(total=Sum("calorie")).get("total")
+            monthly_cat_total_cal = monthly_foodlog.values("meal_type").annotate(total=Sum("calorie"))
+
+            response_data["monthly_total_calorie"] = monthly_total_cal
+            response_data["monthly_category_total_calorie"] = monthly_cat_total_cal
+
+        return Response(data=response_data)
