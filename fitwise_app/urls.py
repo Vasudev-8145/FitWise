@@ -1,7 +1,7 @@
 
 from django.urls import path
 
-from fitwise_app.views import RegisterView,GetMeView,FoodLogListCreateView,FoodLogRetrieveUpdateDeleteView,FoodLogSummaryView
+from fitwise_app.views import RegisterView,GetMeView,FoodLogListCreateView,FoodLogRetrieveUpdateDeleteView,FoodLogSummaryView,DietPlanView
 
 from rest_framework.authtoken.views import ObtainAuthToken
 
@@ -24,4 +24,7 @@ urlpatterns = [
 
     # route for summary view
     path("foodlog/summary/",FoodLogSummaryView.as_view()),
+
+    # route for dietplan view
+    path("foodlog/diet/",DietPlanView.as_view()),
 ]

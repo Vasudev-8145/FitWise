@@ -43,10 +43,10 @@ Content-Type: application/json
 Authorization: Token 68309e79e19f3fa77196ac20fa89ed3a6d28e26f
 
 {
-    "title":"samoosa",
-    "calorie":200,
+    "title":"snacks",
+    "calorie":4000,
     "meal_type":"SNACKS",
-    "serving_size":"50 gm"
+    "serving_size":"20 kg"
 }
 
 # api call for listing one foodlog details
@@ -83,5 +83,11 @@ Authorization: Token 68309e79e19f3fa77196ac20fa89ed3a6d28e26f
 # api call for taking summary
 ###
 GET http://127.0.0.1:8000/v1/fitwise/foodlog/summary/
+Accept: application/json
+Authorization: Token 68309e79e19f3fa77196ac20fa89ed3a6d28e26f
+
+# api call for taking dietplan
+###
+GET http://127.0.0.1:8000/v1/fitwise/foodlog/diet/
 Accept: application/json
 Authorization: Token 68309e79e19f3fa77196ac20fa89ed3a6d28e26f

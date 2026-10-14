@@ -11,6 +11,7 @@ from datetime import datetime
 from fitwise_app.serializers import SignUpSerializer,FoodLogSerializer
 from fitwise_app.models import FoodLog
 from fitwise_app.permissions import IsOwner
+from fitwise_app.ai_services import get_diet_plan
 
 class RegisterView(APIView):
 
@@ -165,5 +166,31 @@ class FoodLogSummaryView(APIView):
 
             response_data["monthly_total_calorie"] = monthly_total_cal
             response_data["monthly_category_total_calorie"] = monthly_cat_total_cal
+
+        return Response(data=response_data)
+
+class DietPlanView(APIView):
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self,request):
+
+        response_data = {"monthly_total_calorie":0}
+
+        cur_month = datetime.now().month
+        cur_year = datetime.now().year
+
+        monthly_calorie = FoodLog.objects.filter(owner=request.user,created_at__month=cur_month,created_at__year=cur_year)
+
+        if monthly_calorie:
+
+            monthly_total_calorie = monthly_calorie.values("calorie").aggregate(total=Sum("calorie")).get("total")
+            category_total_calorie = monthly_calorie.values("meal_type").annotate(total=Sum("calorie"))
+
+            response_data["monthly_total_calorie"] = monthly_total_calorie
+            response_data["category_total_calorie"] = category_total_calorie
+
+            get_diet_plan(response_data)
 
         return Response(data=response_data)
