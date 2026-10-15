@@ -191,6 +191,7 @@ class DietPlanView(APIView):
             response_data["monthly_total_calorie"] = monthly_total_calorie
             response_data["category_total_calorie"] = category_total_calorie
 
-            get_diet_plan(response_data)
+            diet_plan = get_diet_plan(response_data)
+            response_data["Diet Plan"] = diet_plan
 
         return Response(data=response_data)
